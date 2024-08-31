@@ -38,3 +38,35 @@ export function generateTeam(allowedTypes, maxLevel, characterCount) {
   return team;
   // TODO: write logic here
 }
+
+const boxSize = 8;
+
+export const generateRandomMainPosition = (howPositions) => {
+  const allowedPositions = [];
+  for(let i = 0; i < boxSize * boxSize - 1; i += 1) {
+    if(i % boxSize === 0 || i % boxSize === 1) allowedPositions.push(i)
+  }
+  const randomPositions = [];
+  for(let i = 0; i < howPositions; i += 1) {
+    const num = Math.floor(Math.random() * (allowedPositions.length - 0) + 0);
+    randomPositions.push(allowedPositions[num]);
+    allowedPositions.splice(num, 1);
+  }
+
+  return randomPositions;
+};
+
+export const generateRandomOpponentPosition = (howPositions) => {
+  const allowedPositions = [];
+  for(let i = 0; i < boxSize * boxSize - 1; i += 1) {
+    if(i % boxSize === boxSize - 1 || i % boxSize === boxSize - 2) allowedPositions.push(i)
+  }
+  const randomPositions = [];
+  for(let i = 0; i < howPositions; i += 1) {
+    const num = Math.floor(Math.random() * (allowedPositions.length - 0) + 0);
+    randomPositions.push(allowedPositions[num]);
+    allowedPositions.splice(num, 1);
+  }
+
+  return randomPositions;
+};
