@@ -70,3 +70,74 @@ export const generateRandomOpponentPosition = (howPositions) => {
 
   return randomPositions;
 };
+
+export function generateAllowedPositionsToGo(index, type) {
+  const leftEdge = index % 8 === 0;
+  const rightEdge = index % 8 === 8;
+  let left = [];
+  let right = [];
+  let top = [];
+  let bottom = [];
+  let leftTop = [];
+  let rightTop = [];
+  let leftBottom = [];
+  let rightBottom = [];
+  let aroundPerson = [];
+  switch(type){
+    case 'magician':
+    case 'daemon':
+      //LEFT
+      if(leftEdge) {
+        left =  -1;
+        leftTop = -1;
+        leftBottom = -1;
+      } else {
+        left = index - 1;
+        leftTop = left - 8;
+        leftBottom = left + 8;
+      }
+      //RIGHT
+      if(rightEdge) {
+        right = -1;
+        rightTop = -1;
+        rightBottom = -1;
+      } else {
+        right = index + 1;
+        rightTop = right - 8;
+        rightBottom = right + 8;
+      }
+      top = index - 8;
+      bottom = index + 8;
+
+      aroundPerson = [left, right, top, bottom, leftTop, rightTop, leftBottom, rightBottom];
+    break
+    case 'bowman':
+    case 'vampire':
+      left = [index - 1, index - 2];
+      right = [index + 1, index + 2];
+      top = [index - 8, index - 8 * 2];
+      bottom = [index + 8, index + 8 * 2];
+      // topLeft = top.map(item => item - 1);
+      // topRight = top.map(item => item + 1);
+      // bottomLeft = bottom.map(item => item - 1);
+      // bottomRight = bottom.map(item => item + 1);
+      aroundPerson = [...left, ...right, ...top, ...bottom];
+    break
+    case 'swordsman':
+    case 'undead':
+      left = [index - 1, index - 2, index - 3, index - 4];
+      right = [index + 1, index + 2, index + 3, index + 4];
+      top = [index - 8, index - 8 * 2, index - 8 * 3, index - 8 * 4];
+      bottom = [index + 8, index + 8 * 2, index + 8 * 3, index + 8 * 4]
+      topLeft = top.map(item => item - 1);
+      topRight = top.map(item => item + 1);
+      bottomLeft = bottom.map(item => item - 1);
+      bottomRight = bottom.map(item => item + 1);
+      aroundPerson = [...left, ...right, ...top, ...bottom, ...topLeft, ...topRight, ...bottomLeft, ...bottomRight];
+    break
+  }
+
+  const allowAroundPerson = aroundPerson.filter(item => item >= 0 && item <= 63);
+
+  return allowAroundPerson;
+}
