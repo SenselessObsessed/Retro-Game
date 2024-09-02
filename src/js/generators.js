@@ -15,7 +15,7 @@ export function* characterGenerator(allowedTypes, maxLevel) {
   
   while(true) {
     const index = random(0, allowedTypes.length);
-    const lvl = random(0, maxLevel + 1);
+    const lvl = random(1, maxLevel + 1);
     yield new allowedTypes[index](lvl);
   }
   // TODO: write logic here
@@ -41,13 +41,19 @@ export function generateTeam(allowedTypes, maxLevel, characterCount) {
 
 const boxSize = 8;
 
-export const generateRandomMainPosition = (howPositions) => {
+export const generateRandomMainPosition = (howPositions, curretPositions = 0) => {
   const allowedPositions = [];
-  for(let i = 0; i < boxSize * boxSize - 1; i += 1) {
-    if(i % boxSize === 0 || i % boxSize === 1) allowedPositions.push(i)
+  for (let i = 0; i < boxSize * boxSize - 1; i += 1) {
+    if (i % boxSize === 0 || i % boxSize === 1) allowedPositions.push(i)
+  }
+  if (curretPositions) {
+    for (let i = 0; i < curretPositions.length; i += 1) {
+      const idx = allowedPositions.findIndex(item => item === curretPositions[i]);
+      allowedPositions.splice(idx, 1);
+    }
   }
   const randomPositions = [];
-  for(let i = 0; i < howPositions; i += 1) {
+  for (let i = 0; i < howPositions; i += 1) {
     const num = Math.floor(Math.random() * (allowedPositions.length - 0) + 0);
     randomPositions.push(allowedPositions[num]);
     allowedPositions.splice(num, 1);
@@ -131,7 +137,15 @@ export function generateAllowedPositionsToGo(index, type) {
           leftBottom = [
             ...left.map((item) => item + boxSize), 
             ...left.map((item) => item + boxSize * 2)
-
+          ];
+        } else {
+          leftTop = [
+            ...left.map((item) => item - boxSize), 
+            ...left.map((item) => item - boxSize * 2)
+          ];
+          leftBottom = [
+            ...left.map((item) => item + boxSize), 
+            ...left.map((item) => item + boxSize * 2)
           ];
         };
       }
@@ -192,7 +206,20 @@ export function generateAllowedPositionsToGo(index, type) {
             ...left.map((item) => item + boxSize * 3),
             ...left.map((item) => item + boxSize * 4)
           ];
-        };
+        } else {
+          leftTop = [
+            ...left.map((item) => item - boxSize), 
+            ...left.map((item) => item - boxSize * 2),
+            ...left.map((item) => item - boxSize * 3),
+            ...left.map((item) => item - boxSize * 4)
+          ];
+          leftBottom = [
+            ...left.map((item) => item + boxSize), 
+            ...left.map((item) => item + boxSize * 2),
+            ...left.map((item) => item + boxSize * 3),
+            ...left.map((item) => item + boxSize * 4)
+          ];
+        };;
       }
       if(rightEdge) {
         right =  [-1];
@@ -282,7 +309,6 @@ export function generateAllowedPositionsToAttack(index, type) {
 
       aroundPerson = [left, right, top, bottom, leftTop, rightTop, leftBottom, rightBottom];
     break
-    //TODO
     case 'bowman':
     case 'vampire':
       if(leftEdge) {
@@ -303,7 +329,15 @@ export function generateAllowedPositionsToAttack(index, type) {
           leftBottom = [
             ...left.map((item) => item + boxSize), 
             ...left.map((item) => item + boxSize * 2)
-
+          ];
+        } else {
+          leftTop = [
+            ...left.map((item) => item - boxSize), 
+            ...left.map((item) => item - boxSize * 2)
+          ];
+          leftBottom = [
+            ...left.map((item) => item + boxSize), 
+            ...left.map((item) => item + boxSize * 2)
           ];
         };
       }
@@ -364,7 +398,20 @@ export function generateAllowedPositionsToAttack(index, type) {
             ...left.map((item) => item + boxSize * 3),
             ...left.map((item) => item + boxSize * 4)
           ];
-        };
+        } else {
+          leftTop = [
+            ...left.map((item) => item - boxSize), 
+            ...left.map((item) => item - boxSize * 2),
+            ...left.map((item) => item - boxSize * 3),
+            ...left.map((item) => item - boxSize * 4)
+          ];
+          leftBottom = [
+            ...left.map((item) => item + boxSize), 
+            ...left.map((item) => item + boxSize * 2),
+            ...left.map((item) => item + boxSize * 3),
+            ...left.map((item) => item + boxSize * 4)
+          ];
+        };;
       }
       if(rightEdge) {
         right =  [-1];
