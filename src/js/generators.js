@@ -72,8 +72,8 @@ export const generateRandomOpponentPosition = (howPositions) => {
 };
 
 export function generateAllowedPositionsToGo(index, type) {
-  const leftEdge = index % 8 === 0;
-  const rightEdge = index % 8 === 8;
+  const leftEdge = index % boxSize === 0;
+  const rightEdge = index % boxSize === 7;
   let left = [];
   let right = [];
   let top = [];
@@ -93,8 +93,8 @@ export function generateAllowedPositionsToGo(index, type) {
         leftBottom = -1;
       } else {
         left = index - 1;
-        leftTop = left - 8;
-        leftBottom = left + 8;
+        leftTop = left - boxSize;
+        leftBottom = left + boxSize;
       }
       //RIGHT
       if(rightEdge) {
@@ -103,37 +103,309 @@ export function generateAllowedPositionsToGo(index, type) {
         rightBottom = -1;
       } else {
         right = index + 1;
-        rightTop = right - 8;
-        rightBottom = right + 8;
+        rightTop = right - boxSize;
+        rightBottom = right + boxSize;
       }
-      top = index - 8;
-      bottom = index + 8;
+      top = index - boxSize;
+      bottom = index + boxSize;
 
       aroundPerson = [left, right, top, bottom, leftTop, rightTop, leftBottom, rightBottom];
     break
     case 'bowman':
     case 'vampire':
-      left = [index - 1, index - 2];
-      right = [index + 1, index + 2];
-      top = [index - 8, index - 8 * 2];
-      bottom = [index + 8, index + 8 * 2];
-      // topLeft = top.map(item => item - 1);
-      // topRight = top.map(item => item + 1);
-      // bottomLeft = bottom.map(item => item - 1);
-      // bottomRight = bottom.map(item => item + 1);
-      aroundPerson = [...left, ...right, ...top, ...bottom];
+      if(leftEdge) {
+        left =  [-1];
+        leftTop = [-1];
+        leftBottom = [-1];
+      } else {
+        left = [index - 1, index - 2];
+        const idxLeft = left.findIndex(item => item % boxSize === 0);
+        if(idxLeft !== -1) {
+          const findGroundLeft = [...left]
+          left = findGroundLeft.slice(0, idxLeft + 1);
+          leftTop = [
+            ...left.map((item) => item - boxSize), 
+            ...left.map((item) => item - boxSize * 2)
+
+          ];
+          leftBottom = [
+            ...left.map((item) => item + boxSize), 
+            ...left.map((item) => item + boxSize * 2)
+
+          ];
+        };
+      }
+      if(rightEdge) {
+        right =  [-1];
+        rightTop = [-1];
+        rightBottom = [-1];
+      } else {
+        right = [index + 1, index + 2];
+        const idxRight = right.findIndex(item => item % boxSize === 7);
+        if(idxRight !== -1) {
+          const findGroundRight = [...right]
+          right = findGroundRight.slice(0, idxRight + 1);
+          rightTop = [
+            ...right.map((item) => item - boxSize), 
+            ...right.map((item) => item - boxSize * 2)
+          ];
+          rightBottom = [
+            ...right.map((item) => item + boxSize), 
+            ...right.map((item) => item + boxSize * 2)
+          ];
+        } else {
+          rightTop = [
+            ...right.map((item) => item - boxSize), 
+            ...right.map((item) => item - boxSize * 2)
+          ];
+          rightBottom = [
+            ...right.map((item) => item + boxSize), 
+            ...right.map((item) => item + boxSize * 2)
+          ];
+        };
+      }
+      top = [index - boxSize, index - boxSize * 2];
+      bottom = [index + boxSize, index + boxSize * 2];
+      aroundPerson = [...left, ...right, ...top, ...bottom, ...leftTop, ...leftBottom, ...rightTop, ...rightBottom];
     break
     case 'swordsman':
     case 'undead':
-      left = [index - 1, index - 2, index - 3, index - 4];
-      right = [index + 1, index + 2, index + 3, index + 4];
-      top = [index - 8, index - 8 * 2, index - 8 * 3, index - 8 * 4];
-      bottom = [index + 8, index + 8 * 2, index + 8 * 3, index + 8 * 4]
-      topLeft = top.map(item => item - 1);
-      topRight = top.map(item => item + 1);
-      bottomLeft = bottom.map(item => item - 1);
-      bottomRight = bottom.map(item => item + 1);
-      aroundPerson = [...left, ...right, ...top, ...bottom, ...topLeft, ...topRight, ...bottomLeft, ...bottomRight];
+      if(leftEdge) {
+        left =  [-1];
+        leftTop = [-1];
+        leftBottom = [-1];
+      } else {
+        left = [index - 1, index - 2, index - 3, index - 4];
+        const idxLeft = left.findIndex(item => item % boxSize === 0);
+        if(idxLeft !== -1) {
+          const findGroundLeft = [...left]
+          left = findGroundLeft.slice(0, idxLeft + 1);
+          leftTop = [
+            ...left.map((item) => item - boxSize), 
+            ...left.map((item) => item - boxSize * 2),
+            ...left.map((item) => item - boxSize * 3),
+            ...left.map((item) => item - boxSize * 4)
+          ];
+          leftBottom = [
+            ...left.map((item) => item + boxSize), 
+            ...left.map((item) => item + boxSize * 2),
+            ...left.map((item) => item + boxSize * 3),
+            ...left.map((item) => item + boxSize * 4)
+          ];
+        };
+      }
+      if(rightEdge) {
+        right =  [-1];
+        rightTop = [-1];
+        rightBottom = [-1];
+      } else {
+        right = [index + 1, index + 2, index + 3, index + 4];
+        const idxRight = right.findIndex(item => item % boxSize === 7);
+        if(idxRight !== -1) {
+          const findGroundRight = [...right]
+          right = findGroundRight.slice(0, idxRight + 1);
+          rightTop = [
+            ...right.map((item) => item - boxSize), 
+            ...right.map((item) => item - boxSize * 2),
+            ...right.map((item) => item - boxSize * 3),
+            ...right.map((item) => item - boxSize * 4)
+          ];
+          rightBottom = [
+            ...right.map((item) => item + boxSize), 
+            ...right.map((item) => item + boxSize * 2),
+            ...right.map((item) => item + boxSize * 3),
+            ...right.map((item) => item + boxSize * 4)
+          ];
+        } else {
+          rightTop = [
+            ...right.map((item) => item - boxSize), 
+            ...right.map((item) => item - boxSize * 2),
+            ...right.map((item) => item - boxSize * 3),
+            ...right.map((item) => item - boxSize * 4)
+          ];
+          rightBottom = [
+            ...right.map((item) => item + boxSize), 
+            ...right.map((item) => item + boxSize * 2),
+            ...right.map((item) => item + boxSize * 3),
+            ...right.map((item) => item + boxSize * 4)
+          ];
+        };
+      }
+      top = [index - boxSize, index - boxSize * 2, index - boxSize * 3, index - boxSize * 4];
+      bottom = [index + boxSize, index + boxSize * 2, index + boxSize * 3, index + boxSize * 4];
+      aroundPerson = [...left, ...right, ...top, ...bottom, ...leftTop, ...leftBottom, ...rightTop, ...rightBottom];
+    break
+  }
+
+  const allowAroundPerson = aroundPerson.filter(item => item >= 0 && item <= 63);
+
+  return allowAroundPerson;
+}
+
+export function generateAllowedPositionsToAttack(index, type) {
+  const leftEdge = index % boxSize === 0;
+  const rightEdge = index % boxSize === 7;
+  let left = [];
+  let right = [];
+  let top = [];
+  let bottom = [];
+  let leftTop = [];
+  let rightTop = [];
+  let leftBottom = [];
+  let rightBottom = [];
+  let aroundPerson = [];
+  switch(type){
+    case 'swordsman':
+    case 'undead':
+      //LEFT
+      if(leftEdge) {
+        left =  -1;
+        leftTop = -1;
+        leftBottom = -1;
+      } else {
+        left = index - 1;
+        leftTop = left - boxSize;
+        leftBottom = left + boxSize;
+      }
+      //RIGHT
+      if(rightEdge) {
+        right = -1;
+        rightTop = -1;
+        rightBottom = -1;
+      } else {
+        right = index + 1;
+        rightTop = right - boxSize;
+        rightBottom = right + boxSize;
+      }
+      top = index - boxSize;
+      bottom = index + boxSize;
+
+      aroundPerson = [left, right, top, bottom, leftTop, rightTop, leftBottom, rightBottom];
+    break
+    //TODO
+    case 'bowman':
+    case 'vampire':
+      if(leftEdge) {
+        left =  [-1];
+        leftTop = [-1];
+        leftBottom = [-1];
+      } else {
+        left = [index - 1, index - 2];
+        const idxLeft = left.findIndex(item => item % boxSize === 0);
+        if(idxLeft !== -1) {
+          const findGroundLeft = [...left]
+          left = findGroundLeft.slice(0, idxLeft + 1);
+          leftTop = [
+            ...left.map((item) => item - boxSize), 
+            ...left.map((item) => item - boxSize * 2)
+
+          ];
+          leftBottom = [
+            ...left.map((item) => item + boxSize), 
+            ...left.map((item) => item + boxSize * 2)
+
+          ];
+        };
+      }
+      if(rightEdge) {
+        right =  [-1];
+        rightTop = [-1];
+        rightBottom = [-1];
+      } else {
+        right = [index + 1, index + 2];
+        const idxRight = right.findIndex(item => item % boxSize === 7);
+        if(idxRight !== -1) {
+          const findGroundRight = [...right]
+          right = findGroundRight.slice(0, idxRight + 1);
+          rightTop = [
+            ...right.map((item) => item - boxSize), 
+            ...right.map((item) => item - boxSize * 2)
+          ];
+          rightBottom = [
+            ...right.map((item) => item + boxSize), 
+            ...right.map((item) => item + boxSize * 2)
+          ];
+        } else {
+          rightTop = [
+            ...right.map((item) => item - boxSize), 
+            ...right.map((item) => item - boxSize * 2)
+          ];
+          rightBottom = [
+            ...right.map((item) => item + boxSize), 
+            ...right.map((item) => item + boxSize * 2)
+          ];
+        };
+      }
+      top = [index - boxSize, index - boxSize * 2];
+      bottom = [index + boxSize, index + boxSize * 2];
+      aroundPerson = [...left, ...right, ...top, ...bottom, ...leftTop, ...leftBottom, ...rightTop, ...rightBottom];
+    break
+    case 'magician':
+    case 'daemon':
+      if(leftEdge) {
+        left =  [-1];
+        leftTop = [-1];
+        leftBottom = [-1];
+      } else {
+        left = [index - 1, index - 2, index - 3, index - 4];
+        const idxLeft = left.findIndex(item => item % boxSize === 0);
+        if(idxLeft !== -1) {
+          const findGroundLeft = [...left]
+          left = findGroundLeft.slice(0, idxLeft + 1);
+          leftTop = [
+            ...left.map((item) => item - boxSize), 
+            ...left.map((item) => item - boxSize * 2),
+            ...left.map((item) => item - boxSize * 3),
+            ...left.map((item) => item - boxSize * 4)
+          ];
+          leftBottom = [
+            ...left.map((item) => item + boxSize), 
+            ...left.map((item) => item + boxSize * 2),
+            ...left.map((item) => item + boxSize * 3),
+            ...left.map((item) => item + boxSize * 4)
+          ];
+        };
+      }
+      if(rightEdge) {
+        right =  [-1];
+        rightTop = [-1];
+        rightBottom = [-1];
+      } else {
+        right = [index + 1, index + 2, index + 3, index + 4];
+        const idxRight = right.findIndex(item => item % boxSize === 7);
+        if(idxRight !== -1) {
+          const findGroundRight = [...right]
+          right = findGroundRight.slice(0, idxRight + 1);
+          rightTop = [
+            ...right.map((item) => item - boxSize), 
+            ...right.map((item) => item - boxSize * 2),
+            ...right.map((item) => item - boxSize * 3),
+            ...right.map((item) => item - boxSize * 4)
+          ];
+          rightBottom = [
+            ...right.map((item) => item + boxSize), 
+            ...right.map((item) => item + boxSize * 2),
+            ...right.map((item) => item + boxSize * 3),
+            ...right.map((item) => item + boxSize * 4)
+          ];
+        } else {
+          rightTop = [
+            ...right.map((item) => item - boxSize), 
+            ...right.map((item) => item - boxSize * 2),
+            ...right.map((item) => item - boxSize * 3),
+            ...right.map((item) => item - boxSize * 4)
+          ];
+          rightBottom = [
+            ...right.map((item) => item + boxSize), 
+            ...right.map((item) => item + boxSize * 2),
+            ...right.map((item) => item + boxSize * 3),
+            ...right.map((item) => item + boxSize * 4)
+          ];
+        };
+      }
+      top = [index - boxSize, index - boxSize * 2, index - boxSize * 3, index - boxSize * 4];
+      bottom = [index + boxSize, index + boxSize * 2, index + boxSize * 3, index + boxSize * 4];
+      aroundPerson = [...left, ...right, ...top, ...bottom, ...leftTop, ...leftBottom, ...rightTop, ...rightBottom];
     break
   }
 

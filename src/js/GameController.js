@@ -7,6 +7,7 @@ import Daemon from "./characters/Daemon"
 import Undead from "./characters/Undead"
 import Vampire from "./characters/Vampire"
 import GamePlay from "./GamePlay";
+import GameState from "./GameState";
 
 export default class GameController {
   constructor(gamePlay, stateService) {
@@ -34,7 +35,8 @@ export default class GameController {
     for(let i = 0; i < opponentCount; i += 1) {
       positionsCharacters.push({character: opponentTeam.characters[i], position: opponentPositions[i]})
     }
-    this.positionsCharacters = positionsCharacters
+    GameState.from(positionsCharacters);
+    this.positionsCharacters = positionsCharacters;
 
     this.gamePlay.redrawPositions(positionsCharacters);
     this.gamePlay.addCellEnterListener(this.onCellEnter.bind(this));
@@ -45,7 +47,7 @@ export default class GameController {
   }
 
   onCellClick(index) {
-    
+    //Choose character
     if(this.gamePlay.cells[index].hasChildNodes()) {
       const posIndex = this.positionsCharacters.findIndex(item => item.position === index);
       if(
@@ -61,6 +63,22 @@ export default class GameController {
       }
     } else {
       GamePlay.showError('Здесь никого');
+    }
+    //replace character
+    if(this.selectedBox !== undefined) {
+      const posIndex = this.positionsCharacters.findIndex(item => item.position === this.selectedBox);
+      const allowedPositionsToGo = generateAllowedPositionsToGo(this.selectedBox, this.positionsCharacters[posIndex].character.type);
+      const nextIndex = allowedPositionsToGo.findIndex(item => item === index);
+      if(nextIndex !== -1) {
+        const greenCell = this.gamePlay.cells[posIndex];
+        greenCell.classList.remove('selected-green');
+        greenCell.classList.remove('selected');
+        this.gamePlay.deselectCell(this.selectedBox)
+        this.selectedBox = index
+        this.gamePlay.selectCell(index);
+        this.positionsCharacters[posIndex].position = index;
+        this.gamePlay.redrawPositions(this.positionsCharacters);
+      }
     }
     // TODO: react to click
   }
@@ -87,7 +105,8 @@ export default class GameController {
     //GREEN CIRCLE
     if(this.selectedBox !== undefined) {
       const posIndex = this.positionsCharacters.findIndex(item => item.position === this.selectedBox);
-      const allowAroundPerson = generateAllowedPositionsToGo(this.selectedBox, this.positionsCharacters[posIndex].character.type)
+      if(this.positionsCharacters[posIndex]) {
+        const allowAroundPerson = generateAllowedPositionsToGo(this.selectedBox, this.positionsCharacters[posIndex].character.type)
       const indexAround = allowAroundPerson.findIndex(item => item === index);
       if(indexAround !== -1 && !this.gamePlay.cells[index].hasChildNodes()) {
         this.gamePlay.selectCell(index, 'green');
@@ -95,6 +114,7 @@ export default class GameController {
       }
       this.allowedPositionsToGo = allowAroundPerson;
       this.lastGreenCircle = index;
+      }
     }
     // TODO: react to mouse enter
   }
