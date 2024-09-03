@@ -12,12 +12,12 @@
  * ```
  * */
 export default class Team {
-  constructor() { 
-    this.characters = [] 
+  constructor() {
+    this.characters = [];
   }
-  
+
   add(char) {
-    this.characters.push(char)
+    this.characters.push(char);
   }
   // TODO: write your logic here
 }

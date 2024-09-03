@@ -14,13 +14,14 @@
  */
 export default class Character {
   constructor(level, type = 'generic') {
-    switch(level) {
+    if (new.target === Character) throw new Error('Cant create a of class Character');
+    switch (level) {
       case 2:
-        this.levelUp()
+        this.levelUp();
       case 3:
-        this.levelUp()
+        this.levelUp();
       case 4:
-        this.levelUp()
+        this.levelUp();
     }
     this.level = level;
     this.attack = 0;

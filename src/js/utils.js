@@ -24,7 +24,7 @@
  * */
 export function calcTileType(index, boardSize) {
   const size = boardSize;
-  
+
   const top = index < size;
   const bottom = index < size * size && index > size * size - size;
   const left = index % size === 0;
@@ -38,13 +38,14 @@ export function calcTileType(index, boardSize) {
     case size * size - 1:
       return 'bottom-right';
     case size * size - size:
-      return 'bottom-left'
+      return 'bottom-left';
+    default:
   }
 
-  if(top) return 'top';
-  if(bottom) return 'bottom';
-  if(left) return 'left';
-  if(right) return 'right';
+  if (top) return 'top';
+  if (bottom) return 'bottom';
+  if (left) return 'left';
+  if (right) return 'right';
 
   // TODO: ваш код будет тут
   return 'center';
